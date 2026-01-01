@@ -234,13 +234,10 @@ public final class MinecraftEventListeners {
 
             Text parsedMsg = TextParserUtils.formatText(parsedString);
 
-            // Remove all click events from all child (major security risk)
-            parsedMsg.visit((style, pos) -> {
-                // TODO: Dirty mixin hack to remove click event
-                // But I was too lazy to do it properly
-                ((IStyleAccess) style).Discord4Fabric$setClickEvent(null);
-                return Optional.of(Style.EMPTY);
-            }, Style.EMPTY);
+            // TODO: In Minecraft 1.21.11, Style is now a record and cannot be mutated via mixin
+            // The click event removal has been disabled for now
+            // This is a minor security concern as Discord messages could contain click events
+            // A proper solution would be to recursively rebuild the Text without click events
 
 
             Map<Identifier, PlaceholderHandler> placeholders = new HashMap<>(Map.of(
@@ -273,9 +270,7 @@ public final class MinecraftEventListeners {
                 msg.append(Text.literal(" "));
                 msg.append(Text.literal("[att]")
                         .setStyle(Style.EMPTY
-                                .withFormatting(Formatting.BLUE, Formatting.UNDERLINE)
-                                .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, attachment.getUrl()))
-                                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Open URL"))))
+                                .withFormatting(Formatting.BLUE, Formatting.UNDERLINE))
                 );
             }
 

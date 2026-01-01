@@ -1,6 +1,7 @@
 package me.reimnop.d4f.customevents.constraints;
 
 import eu.pb4.placeholders.api.PlaceholderHandler;
+import me.reimnop.d4f.mixin.ServerPlayerEntityAccessor;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +14,19 @@ public class OperatorConstraintProcessor implements ConstraintProcessor {
     private final boolean isOp;
 
     public OperatorConstraintProcessor(ServerPlayerEntity playerEntity) {
-        isOp = playerEntity.hasPermissionLevel(4);
+        // In 1.21.11, check if player has permission level >= 2 (operator level)
+        var server = ((ServerPlayerEntityAccessor) playerEntity).getServer();
+        // Simple heuristic: check if player is listed in the ops list by checking the entries
+        boolean foundInOps = false;
+        if (server != null) {
+            for (var entry : server.getPlayerManager().getOpList().values()) {
+                if (entry.getKey().equals(playerEntity.getGameProfile())) {
+                    foundInOps = true;
+                    break;
+                }
+            }
+        }
+        isOp = foundInOps;
     }
 
     @Override

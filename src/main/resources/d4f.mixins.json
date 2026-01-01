@@ -3,6 +3,7 @@
   "compatibilityLevel": "JAVA_21",
   "server": [
     "PlayerAdvancementTrackerMixin",
+    "ServerPlayerEntityAccessor",
     "ServerPlayerEntityMixin",
     "StyleMixin",
     "compat.vanish.VanishCommandMixin"

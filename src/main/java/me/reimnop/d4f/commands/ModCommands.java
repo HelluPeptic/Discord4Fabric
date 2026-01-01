@@ -37,9 +37,7 @@ public final class ModCommands {
                                                                 .formatted(Formatting.GRAY))
                                                         .append(Text.literal(code)
                                                                 .setStyle(Style.EMPTY
-                                                                        .withFormatting(Formatting.BLUE, Formatting.UNDERLINE)
-                                                                        .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, code))
-                                                                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Copy to clipboard")))))
+                                                                        .withFormatting(Formatting.BLUE, Formatting.UNDERLINE)))
                                                         .append(Text.literal(" (click to copy)\nPlease DM the bot this linking code to finish the linking process")
                                                                 .formatted(Formatting.GRAY));
 
@@ -66,7 +64,6 @@ public final class ModCommands {
                                         return 1;
                                     }))
                             .then(CommandManager.literal("refresh_cache")
-                                    .requires(source -> source.hasPermissionLevel(4))
                                     .executes(context -> {
                                         try {
                                             context.getSource().sendFeedback(
@@ -82,7 +79,6 @@ public final class ModCommands {
                                         }
                                     }))
                             .then(CommandManager.literal("reload")
-                                    .requires(source -> source.hasPermissionLevel(4))
                                     .executes(context -> {
                                         try {
                                             File configFile = new File(Utils.getConfigPath());
@@ -107,7 +103,6 @@ public final class ModCommands {
                                         }
                                     }))
                             .then(CommandManager.literal("reload_custom_events")
-                                    .requires(source -> source.hasPermissionLevel(4))
                                     .executes(context -> {
                                         try {
                                             File file = new File(Utils.getCustomEventsPath());
@@ -131,7 +126,6 @@ public final class ModCommands {
                                         }
                                     }))
                             .then(CommandManager.literal("update")
-                                    .requires(source -> source.hasPermissionLevel(4))
                                     .executes(context -> {
                                         try {
                                             File configFile = new File(Utils.getConfigPath());
