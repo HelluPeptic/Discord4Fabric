@@ -1,13 +1,20 @@
 package me.reimnop.d4f.utils;
 
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Base64;
+import java.util.Map;
+import java.util.UUID;
+
+import org.samo_lego.fabrictailor.casts.TailoredPlayer;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
 import eu.pb4.placeholders.api.PlaceholderHandler;
 import eu.pb4.placeholders.api.Placeholders;
-import me.lucko.spark.api.Spark;
-import me.lucko.spark.api.SparkProvider;
-import me.lucko.spark.api.statistic.StatisticWindow;
-import me.lucko.spark.api.statistic.types.DoubleStatistic;
 import me.reimnop.d4f.Discord4Fabric;
 import me.reimnop.d4f.NameToUUIDConverter;
 import net.dv8tion.jda.api.entities.Member;
@@ -17,17 +24,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import org.samo_lego.fabrictailor.casts.TailoredPlayer;
-
-import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
-import java.util.Base64;
-import java.util.Map;
-import java.util.UUID;
 
 public final class Utils {
-    private Utils() {}
+
+    private Utils() {
+    }
 
     private static final NameToUUIDConverter nameToUUIDConverter;
 
@@ -99,18 +100,37 @@ public final class Utils {
 
     public static String getTpsAsString() {
         if (FabricLoader.getInstance().isModLoaded("spark")) {
-            Spark spark = SparkProvider.get();
-            DoubleStatistic<StatisticWindow.TicksPerSecond> tps = spark.tps();
+            try {
+                // Use reflection to avoid compile-time dependencies
+                Class<?> sparkProviderClass = Class.forName("me.lucko.spark.api.SparkProvider");
+                Method getMethod = sparkProviderClass.getMethod("get");
+                Object spark = getMethod.invoke(null);
 
-            if (tps == null) {
+                Class<?> sparkClass = Class.forName("me.lucko.spark.api.Spark");
+                Method tpsMethod = sparkClass.getMethod("tps");
+                Object tpsStatistic = tpsMethod.invoke(spark);
+
+                if (tpsStatistic == null) {
+                    return String.valueOf(roundTps(getShittyTps((MinecraftServer) FabricLoader.getInstance().getGameInstance())));
+                }
+
+                // Get the TicksPerSecond enum values
+                Class<?> ticksPerSecondClass = Class.forName("me.lucko.spark.api.statistic.StatisticWindow$TicksPerSecond");
+                Object seconds10 = ticksPerSecondClass.getField("SECONDS_10").get(null);
+                Object minutes5 = ticksPerSecondClass.getField("MINUTES_5").get(null);
+                Object minutes15 = ticksPerSecondClass.getField("MINUTES_15").get(null);
+
+                // Call poll method
+                Method pollMethod = tpsStatistic.getClass().getMethod("poll", Object.class);
+                double tpsLast10Secs = (Double) pollMethod.invoke(tpsStatistic, seconds10);
+                double tpsLast5Mins = (Double) pollMethod.invoke(tpsStatistic, minutes5);
+                double tpsLast15Mins = (Double) pollMethod.invoke(tpsStatistic, minutes15);
+
+                return roundTps(tpsLast10Secs) + " / " + roundTps(tpsLast5Mins) + " / " + roundTps(tpsLast15Mins) + " (10 secs / 5 mins / 15 mins)";
+            } catch (Exception e) {
+                Discord4Fabric.LOGGER.warn("Failed to get TPS from Spark, falling back to basic TPS calculation", e);
                 return String.valueOf(roundTps(getShittyTps((MinecraftServer) FabricLoader.getInstance().getGameInstance())));
             }
-
-            double tpsLast10Secs = tps.poll(StatisticWindow.TicksPerSecond.SECONDS_10);
-            double tpsLast5Mins = tps.poll(StatisticWindow.TicksPerSecond.MINUTES_5);
-            double tpsLast15Mins = tps.poll(StatisticWindow.TicksPerSecond.MINUTES_15);
-
-            return roundTps(tpsLast10Secs) + " / " + roundTps(tpsLast5Mins) + " / " + roundTps(tpsLast15Mins) + " (10 secs / 5 mins / 15 mins)";
         }
         return String.valueOf(roundTps(getShittyTps((MinecraftServer) FabricLoader.getInstance().getGameInstance())));
     }
@@ -141,7 +161,7 @@ public final class Utils {
         if (color == null) {
             return member.getEffectiveName();
         }
-        return "<c:" + "#"+Integer.toHexString(color.getRGB()).substring(2) + ">" + member.getEffectiveName() + "</c>";
+        return "<c:" + "#" + Integer.toHexString(color.getRGB()).substring(2) + ">" + member.getEffectiveName() + "</c>";
     }
 
     public static boolean isModLoaded(String modid) {
