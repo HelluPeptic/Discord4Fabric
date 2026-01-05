@@ -86,7 +86,7 @@ public final class Utils {
         return FabricLoader.getInstance().getConfigDir() + "/d4f_custom_events.json";
     }
 
-    public static PlaceholderHandler getPlaceholderHandler(String placeholder, Map<Identifier, PlaceholderHandler> handlers) {
+public static PlaceholderHandler getPlaceholderHandler(String placeholder, Map<Identifier, PlaceholderHandler> handlers) {
         Identifier id = Identifier.tryParse(placeholder);
         if (handlers.containsKey(id)) {
             return handlers.get(id);

@@ -43,14 +43,14 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // Required mod dependencies
+    // Required mod dependencies  
     include modImplementation("eu.pb4:placeholder-api:${project.placeholder_version}")
     include implementation("net.dv8tion:JDA:${project.jda_version}") {
         exclude module: "opus-java"
     }
 
-    // Player data api
-    modImplementation include("eu.pb4:player-data-api:${project.player_data_version}")
+    // Optional - Player data api (commented out due to 1.21.11 compatibility issues)
+    // modImplementation include("eu.pb4:player-data-api:${project.player_data_version}")
 
     include implementation("club.minnced:discord-webhooks:${project.webhook_version}")
     include implementation("com.vdurmont:emoji-java:5.1.1")

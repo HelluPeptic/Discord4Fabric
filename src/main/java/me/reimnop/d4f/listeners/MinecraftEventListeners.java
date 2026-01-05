@@ -39,7 +39,9 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public final class MinecraftEventListeners {
-    private MinecraftEventListeners() {}
+
+    private MinecraftEventListeners() {
+    }
 
     private static final Pattern DISCORD_PING_PATTERN = Pattern.compile("<@(?<id>\\d+)>");
     private static final Pattern MINECRAFT_PING_PATTERN = Pattern.compile("@(?<name>\\w+)");
@@ -52,7 +54,7 @@ public final class MinecraftEventListeners {
                 return;
             }
             // Vanish compatibility
-            if(Compatibility.isPlayerVanished(playerEntity)) {
+            if (Compatibility.isPlayerVanished(playerEntity)) {
                 return;
             }
 
@@ -161,15 +163,18 @@ public final class MinecraftEventListeners {
                 String code = message.getContentRaw();
                 AccountLinking.LinkingResult result = accountLinking.tryLinkAccount(code, user.getIdLong());
                 switch (result) {
-                    case INVALID_CODE -> channel
-                            .sendMessage(MessageCreateData.fromContent("Invalid linking code!"))
-                            .queue();
-                    case ACCOUNT_LINKED -> channel
-                            .sendMessage(MessageCreateData.fromContent("Your account was already linked!"))
-                            .queue();
-                    case SUCCESS -> channel
-                            .sendMessage(MessageCreateData.fromContent("Your account was successfully linked!"))
-                            .queue();
+                    case INVALID_CODE ->
+                        channel
+                                .sendMessage(MessageCreateData.fromContent("Invalid linking code!"))
+                                .queue();
+                    case ACCOUNT_LINKED ->
+                        channel
+                                .sendMessage(MessageCreateData.fromContent("Your account was already linked!"))
+                                .queue();
+                    case SUCCESS ->
+                        channel
+                                .sendMessage(MessageCreateData.fromContent("Your account was successfully linked!"))
+                                .queue();
                 }
                 return;
             }
@@ -211,10 +216,10 @@ public final class MinecraftEventListeners {
 
                             return Placeholders
                                     .parseText(
-                                        Text.literal(config.discordPingFormat), // We'll format this later
-                                        PlaceholderContext.of(server),
-                                        Placeholders.PLACEHOLDER_PATTERN,
-                                        placeholder -> Utils.getPlaceholderHandler(placeholder, pingPlaceholders)
+                                            Text.literal(config.discordPingFormat), // We'll format this later
+                                            PlaceholderContext.of(server),
+                                            Placeholders.PLACEHOLDER_PATTERN,
+                                            placeholder -> Utils.getPlaceholderHandler(placeholder, pingPlaceholders)
                                     )
                                     .getString();
                         }
@@ -238,8 +243,6 @@ public final class MinecraftEventListeners {
             // The click event removal has been disabled for now
             // This is a minor security concern as Discord messages could contain click events
             // A proper solution would be to recursively rebuild the Text without click events
-
-
             Map<Identifier, PlaceholderHandler> placeholders = new HashMap<>(Map.of(
                     Discord4Fabric.id("fullname"), (ctx, arg) -> PlaceholderResult.value(user.getAsTag()),
                     Discord4Fabric.id("nickname"), (ctx, arg) -> PlaceholderResult.value(Utils.getNicknameFromUser(user)),
