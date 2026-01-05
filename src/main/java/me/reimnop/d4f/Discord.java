@@ -4,6 +4,7 @@ import club.minnced.discord.webhook.WebhookClient;
 import club.minnced.discord.webhook.send.AllowedMentions;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import eu.pb4.placeholders.api.*;
+import eu.pb4.placeholders.api.parsers.PatternPlaceholderParser;
 import me.reimnop.d4f.exceptions.ChannelException;
 import me.reimnop.d4f.exceptions.GuildException;
 import me.reimnop.d4f.listeners.DiscordMessageListener;
@@ -172,9 +173,9 @@ public class Discord {
                     Discord4Fabric.id("message"), (ctx, arg) -> PlaceholderResult.value(message)
             );
             Text msg = sender == null ? Text.literal(String.format("%s: %s", name.getString(), message.getString())) : Placeholders.parseText(
-                    TextParserUtils.formatText(config.webhookToPlainMessage),
+                    Text.of(config.webhookToPlainMessage),
                     PlaceholderContext.of(sender),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
             sendPlainMessage(msg);

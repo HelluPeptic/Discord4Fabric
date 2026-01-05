@@ -2,6 +2,7 @@ package me.reimnop.d4f.listeners;
 
 import com.vdurmont.emoji.EmojiParser;
 import eu.pb4.placeholders.api.*;
+import eu.pb4.placeholders.api.parsers.PatternPlaceholderParser;
 import me.reimnop.d4f.AccountLinking;
 import me.reimnop.d4f.Config;
 import me.reimnop.d4f.Discord;
@@ -87,16 +88,16 @@ public final class MinecraftEventListeners {
             );
 
             Text title = Placeholders.parseText(
-                    TextParserUtils.formatText(titleStr),
+                    Text.of(titleStr),
                     PlaceholderContext.of(playerEntity),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
 
             Text desc = Placeholders.parseText(
-                    TextParserUtils.formatText(descStr),
+                    Text.of(descStr),
                     PlaceholderContext.of(playerEntity),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
 
@@ -107,7 +108,7 @@ public final class MinecraftEventListeners {
                 () -> config.updateInterval,
                 server -> {
                     Text status = Placeholders.parseText(
-                            TextParserUtils.formatText(config.status),
+                            Text.of(config.status),
                             PlaceholderContext.of(server)
                     );
                     discord.setStatus(status);
@@ -118,7 +119,7 @@ public final class MinecraftEventListeners {
                 () -> config.topicUpdateInterval,
                 server -> {
                     Text status = Placeholders.parseText(
-                            TextParserUtils.formatText(config.topic),
+                            Text.of(config.topic),
                             PlaceholderContext.of(server)
                     );
                     discord.setChannelTopic(status);
@@ -131,7 +132,7 @@ public final class MinecraftEventListeners {
             }
 
             Text message = Placeholders.parseText(
-                    TextParserUtils.formatText(config.serverStartMessage),
+                    Text.of(config.serverStartMessage),
                     PlaceholderContext.of(server)
             );
             discord.sendPlainMessage(message);
@@ -143,7 +144,7 @@ public final class MinecraftEventListeners {
             }
 
             Text message = Placeholders.parseText(
-                    TextParserUtils.formatText(config.serverStopMessage),
+                    Text.of(config.serverStopMessage),
                     PlaceholderContext.of(server)
             );
             discord.sendPlainMessage(message);
@@ -218,7 +219,7 @@ public final class MinecraftEventListeners {
                                     .parseText(
                                             Text.literal(config.discordPingFormat), // We'll format this later
                                             PlaceholderContext.of(server),
-                                            Placeholders.PLACEHOLDER_PATTERN,
+                                            PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                                             placeholder -> Utils.getPlaceholderHandler(placeholder, pingPlaceholders)
                                     )
                                     .getString();
@@ -237,7 +238,7 @@ public final class MinecraftEventListeners {
             parsedString = TextUtils.parseMarkdownToPAPI(parsedString);
             parsedString = EmojiParser.parseToAliases(parsedString);
 
-            Text parsedMsg = TextParserUtils.formatText(parsedString);
+            Text parsedMsg = Text.of(parsedString);
 
             // TODO: In Minecraft 1.21.11, Style is now a record and cannot be mutated via mixin
             // The click event removal has been disabled for now
@@ -263,9 +264,9 @@ public final class MinecraftEventListeners {
             }
 
             MutableText msg = (MutableText) Placeholders.parseText(
-                    TextParserUtils.formatText(repliedMessage == null ? config.discordToMinecraftMessage : config.discordToMinecraftWithReplyMessage),
+                    Text.of(repliedMessage == null ? config.discordToMinecraftMessage : config.discordToMinecraftWithReplyMessage),
                     PlaceholderContext.of(server),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
 
@@ -343,16 +344,16 @@ public final class MinecraftEventListeners {
             );
 
             Text msg = Placeholders.parseText(
-                    TextParserUtils.formatText(config.minecraftToDiscordMessage),
+                    Text.of(config.minecraftToDiscordMessage),
                     PlaceholderContext.of(sender),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
 
             Text name = Placeholders.parseText(
-                    TextParserUtils.formatText(config.discordName),
+                    Text.of(config.discordName),
                     PlaceholderContext.of(sender),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
 
@@ -424,16 +425,16 @@ public final class MinecraftEventListeners {
             ServerPlayerEntity sender = source.getPlayer();
 
             Text msg = sender == null ? message.getContent() : Placeholders.parseText(
-                    TextParserUtils.formatText(config.minecraftToDiscordMessage),
+                    Text.of(config.minecraftToDiscordMessage),
                     PlaceholderContext.of(sender),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
 
             Text name = sender == null ? Text.literal("Server") : Placeholders.parseText(
-                    TextParserUtils.formatText(config.discordName),
+                    Text.of(config.discordName),
                     PlaceholderContext.of(sender),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
 
@@ -462,16 +463,16 @@ public final class MinecraftEventListeners {
             );
 
             Text msg = Placeholders.parseText(
-                    TextParserUtils.formatText(config.playerJoinMessage),
+                    Text.of(config.playerJoinMessage),
                     PlaceholderContext.of(player),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
 
             Text desc = Placeholders.parseText(
-                    TextParserUtils.formatText(config.playerJoinDescription),
+                    Text.of(config.playerJoinDescription),
                     PlaceholderContext.of(player),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
 
@@ -494,16 +495,16 @@ public final class MinecraftEventListeners {
             );
 
             Text msg = Placeholders.parseText(
-                    TextParserUtils.formatText(config.playerLeftMessage),
+                    Text.of(config.playerLeftMessage),
                     PlaceholderContext.of(player),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
 
             Text desc = Placeholders.parseText(
-                    TextParserUtils.formatText(config.playerLeftDescription),
+                    Text.of(config.playerLeftDescription),
                     PlaceholderContext.of(player),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
 
@@ -525,16 +526,16 @@ public final class MinecraftEventListeners {
             );
 
             Text msg = Placeholders.parseText(
-                    TextParserUtils.formatText(config.deathMessage),
+                    Text.of(config.deathMessage),
                     PlaceholderContext.of(playerEntity),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
 
             Text desc = Placeholders.parseText(
-                    TextParserUtils.formatText(config.deathDescription),
+                    Text.of(config.deathDescription),
                     PlaceholderContext.of(playerEntity),
-                    Placeholders.PLACEHOLDER_PATTERN,
+                    PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                     placeholder -> Utils.getPlaceholderHandler(placeholder, placeholders)
             );
 

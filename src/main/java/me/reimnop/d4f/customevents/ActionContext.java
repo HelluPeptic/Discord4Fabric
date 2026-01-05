@@ -3,7 +3,7 @@ package me.reimnop.d4f.customevents;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderHandler;
 import eu.pb4.placeholders.api.Placeholders;
-import eu.pb4.placeholders.api.TextParserUtils;
+import eu.pb4.placeholders.api.parsers.PatternPlaceholderParser;
 import me.reimnop.d4f.utils.Utils;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -28,12 +28,12 @@ public class ActionContext {
         return Placeholders.parseText(
                 text,
                 placeholderContext,
-                Placeholders.PLACEHOLDER_PATTERN,
+                PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN,
                 placeholder -> Utils.getPlaceholderHandler(placeholder, placeholderHandlers)
         );
     }
 
     public Text parsePlaceholder(String value) {
-        return parsePlaceholder(TextParserUtils.formatText(value));
+        return parsePlaceholder(Text.of(value));
     }
 }
